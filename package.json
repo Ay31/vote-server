@@ -1,14 +1,22 @@
 {
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-router": "^7.4.0",
-    "mongoose": "^5.8.7"
+    "mongoose": "^5.8.7",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
     "@types/koa": "^2.11.0",
     "@types/koa-router": "^7.4.0",
     "@types/mongoose": "^5.5.41",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.1.2",
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.4"
