@@ -21,10 +21,11 @@ app.use(
 )
 
 import { usersRouter } from './routes/users'
-import { tokenRouter } from './routes/token'
+// import { tokenRouter } from './routes/users'
+import { voteRouter } from './routes/vote'
 
 router.use('/api/users', usersRouter)
-router.use('/api/token', tokenRouter)
+router.use('/api/vote', voteRouter)
 
 app.use(router.routes()).use(router.allowedMethods())
 
