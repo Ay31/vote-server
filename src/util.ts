@@ -2,18 +2,19 @@ import config from './config'
 const jwt = require('jsonwebtoken')
 
 // 校验token接口
-export const checkToken = (ctx: any, next: any) => {
+export const checkToken = async (ctx: any, next: any) => {
   const token = ctx.request.header.authorization
-  console.log(token)
+  let checkStatus = true
   if (token) {
     jwt.verify(token, config.jwtSecret, (err: Error, decoded: any) => {
       if (err) {
+        checkStatus = false
         console.log(err)
       }
       if (decoded.openId) {
         console.log('认证成功')
-        next()
       } else {
+        checkStatus = false
         console.log('认证失败')
         ctx.status = 401
         ctx.body = {
@@ -22,4 +23,5 @@ export const checkToken = (ctx: any, next: any) => {
       }
     })
   }
+  checkStatus && (await next())
 }

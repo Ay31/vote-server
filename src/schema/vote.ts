@@ -19,12 +19,10 @@ const VoteSchema = new Schema({
     required: true
   },
   desTextareaData: {
-    type: String,
-    // required: true
+    type: String
   },
   enable: {
-    type: Boolean,
-    required: true
+    type: Boolean
   },
   isPrivate: {
     type: Boolean,
