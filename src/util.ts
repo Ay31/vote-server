@@ -25,3 +25,14 @@ export const checkToken = async (ctx: any, next: any) => {
   }
   checkStatus && (await next())
 }
+
+// 获取投票者ID
+function getSupportersList(voteOptionList: any) {
+  let supportersList: any = []
+  voteOptionList.forEach((option: any) => {
+    supportersList = supportersList.concat(option.supporters)
+  })
+  return supportersList!
+}
+
+export { getSupportersList }
