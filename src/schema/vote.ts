@@ -13,7 +13,6 @@ const userInfoSchema = new mongoose.Schema({
 })
 
 const VoteSchema = new Schema({
-  scores: Array,
   openId: {
     type: String,
     required: true,
@@ -33,6 +32,7 @@ const VoteSchema = new Schema({
   desTextareaData: {
     type: String,
   },
+  imgIdList: Array,
   enable: {
     type: Boolean,
   },

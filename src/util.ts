@@ -18,7 +18,7 @@ export const checkToken = async (ctx: any, next: any) => {
         console.log('认证失败')
         ctx.status = 401
         ctx.body = {
-          message: '认证失败'
+          message: '认证失败',
         }
       }
     })
@@ -26,13 +26,33 @@ export const checkToken = async (ctx: any, next: any) => {
   checkStatus && (await next())
 }
 
-// 获取投票者ID
+// 获取总投票者ID
 function getSupportersList(voteOptionList: any) {
   let supportersList: any = []
   voteOptionList.forEach((option: any) => {
-    supportersList = supportersList.concat(option.supporters)
+    option.supporters.forEach((item: any) => {
+      supportersList = supportersList.concat(item.openId)
+    })
   })
   return supportersList!
 }
 
-export { getSupportersList }
+// 用户是否投过票
+function checkUserVote(voteOptionList: any, openId: String): Boolean {
+  const supportersList = getSupportersList(voteOptionList)
+  const beforeVote = supportersList.indexOf(openId) === -1 ? true : false
+  return beforeVote
+}
+
+// 获取投票占比
+function getRetio(voteOptionList: any) {
+  const total = voteOptionList.reduce((prev: Number, item: any) => {
+    return prev + item.count
+  }, 0)
+  const ratioList = voteOptionList.map((item: any) => {
+    if (item.count === 0) return 0
+    return Math.round((item.count / total) * 100)
+  })
+  return ratioList
+}
+export { getSupportersList, checkUserVote, getRetio }

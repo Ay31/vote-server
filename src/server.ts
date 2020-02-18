@@ -9,23 +9,25 @@ const router: Router = new Router() // 新建一个koa-router对象
 mongoose
   .connect('mongodb://localhost/test', {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => console.log('connect suc'))
 
 app.use(
   KoaBody({
     json: true,
-    urlencoded: true
+    urlencoded: true,
+    multipart: true,
   })
 )
 
 import { usersRouter } from './routes/users'
-// import { tokenRouter } from './routes/users'
 import { voteRouter } from './routes/vote'
+import { sourceRouter } from './routes/source'
 
 router.use('/api/users', usersRouter)
 router.use('/api/vote', voteRouter)
+router.use('/source', sourceRouter)
 
 app.use(router.routes()).use(router.allowedMethods())
 
