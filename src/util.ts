@@ -1,7 +1,7 @@
 import config from './config'
 const jwt = require('jsonwebtoken')
 
-// 校验token接口
+// 校验token
 export const checkToken = async (ctx: any, next: any) => {
   const token = ctx.request.header.authorization
   let checkStatus = true

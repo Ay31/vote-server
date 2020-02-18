@@ -1,4 +1,5 @@
 import Router from 'koa-router' // 导入koa-router
+import config from '../config'
 import fs from 'fs'
 import path from 'path'
 
@@ -7,15 +8,17 @@ const router = new Router()
 // 上传图片接口
 router.post('/uploadImage', (ctx: any) => {
   console.log('uploadImg suc')
-  console.log(ctx.request.files)
+  const type = ctx.request.files['image']['name'].split('.')
+  const name =
+    Date.now().toString() + Math.floor(Math.random() * 100000000000).toString()
   const reader = fs.createReadStream(ctx.request.files['image']['path'])
   const stream = fs.createWriteStream(
-    path.join('E:/source/upload/') + `/${ctx.request.files['image']['name']}`
+    path.join('E:/source/upload/') + `/${name}.${type[type.length - 1]}`
   )
   reader.pipe(stream)
   ctx.body = {
     msg: 'ok',
-    url: `E:/source/upload/${ctx.request.files['image']['name']}`,
+    url: `${config.host}/source/images/${name}.${type[type.length - 1]}`,
   }
 })
 

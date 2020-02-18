@@ -1,6 +1,4 @@
 import Router from 'koa-router' // 导入koa-router
-import fs from 'fs'
-import path from 'path'
 import { Vote } from '../schema/vote'
 import { checkToken, checkUserVote, getRetio } from '../util'
 
