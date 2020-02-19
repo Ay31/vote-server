@@ -34,9 +34,9 @@ router.post('/createVote', async ctx => {
 // 获取投票详情接口
 router.get('/getVoteDetail', async ctx => {
   console.log('获取投票详情接口')
-  const voteId = ctx.request.query.voteId
+  const { voteId, openId } = ctx.request.query
   const voteDetail: any = await Vote.findOne({ _id: voteId })
-  const beforeVote = checkUserVote(voteDetail.voteOptionList, voteId)
+  const beforeVote = checkUserVote(voteDetail.voteOptionList, openId)
   ctx.body = { voteDetail, beforeVote }
 })
 
