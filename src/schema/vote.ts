@@ -32,7 +32,8 @@ const VoteSchema = new Schema({
   desTextareaData: {
     type: String,
   },
-  imgIdList: Array,
+  imageList: Array,
+  votersCount: Number,
   enable: {
     type: Boolean,
   },
@@ -47,6 +48,7 @@ const VoteSchema = new Schema({
       supporters: [userInfoSchema],
     },
   ],
+  userInfo: Object,
 })
 
 export const Vote = mongoose.model('vote', VoteSchema)

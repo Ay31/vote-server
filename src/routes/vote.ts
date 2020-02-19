@@ -1,5 +1,6 @@
 import Router from 'koa-router' // 导入koa-router
 import { Vote } from '../schema/vote'
+import { User } from '../schema/user'
 import { checkToken, checkUserVote, getRetio } from '../util'
 
 const router = new Router()
@@ -44,6 +45,14 @@ router.post('/submitVote', async ctx => {
   console.log('submitVote suc')
   const { optionId, openId, voteId, userInfo } = ctx.request.body
   await Vote.update(
+    {
+      _id: voteId,
+    },
+    {
+      $inc: { votersCount: 1 },
+    }
+  )
+  await Vote.update(
     { _id: voteId, 'voteOptionList._id': optionId },
     {
       $push: {
@@ -72,12 +81,39 @@ router.get('/getVoteList', async ctx => {
   console.log('getVoteList suc')
   const openId = ctx.request.query.openId
   try {
-    const res = await Vote.find({ openId })
+    const user: any = await User.findOne({ openId })
+    const res: any = await Vote.find({ openId }).sort({ createTime: -1 })
     const voteList = res.map((item: any) => {
+      const beforeVote = checkUserVote(item.voteOptionList, openId)
       return {
-        voteId: item._id,
-        voteTitle: item.voteTitle,
-        imgIdList: item.imgIdList,
+        voteData: item,
+        userInfo: user.userInfo,
+        beforeVote,
+      }
+    })
+    ctx.body = {
+      voteList,
+    }
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+// 获取热门投票列表接口
+router.get('/getHotVoteList', async ctx => {
+  console.log('getHotVoteList suc')
+  const openId = ctx.request.query.openId
+  try {
+    const user: any = await User.findOne({ openId })
+    const res: any = await Vote.find({ isPrivate: false }).sort({
+      votersCount: -1,
+    })
+    const voteList = res.map((item: any) => {
+      const beforeVote = checkUserVote(item.voteOptionList, openId)
+      return {
+        voteData: item,
+        userInfo: user.userInfo,
+        beforeVote,
       }
     })
     ctx.body = {
