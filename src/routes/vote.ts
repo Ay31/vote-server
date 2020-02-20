@@ -1,7 +1,7 @@
 import Router from 'koa-router' // 导入koa-router
 import { Vote } from '../schema/vote'
 import { User } from '../schema/user'
-import { checkToken, checkUserVote, getRetio } from '../util'
+import { checkToken, checkUserVote, getRetio, filterVoteList } from '../util'
 
 const router = new Router()
 
@@ -125,7 +125,10 @@ router.get('/getHotVoteList', async ctx => {
   const openId = ctx.request.query.openId
   try {
     const user: any = await User.findOne({ openId })
-    const res: any = await Vote.find({ isPrivate: false }).sort({
+    const res: any = await Vote.find({
+      isPrivate: false,
+      endingTime: { $gt: new Date().valueOf() },
+    }).sort({
       votersCount: -1,
     })
     const voteList = res.map((item: any) => {

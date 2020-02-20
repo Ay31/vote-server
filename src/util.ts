@@ -55,4 +55,14 @@ function getRetio(voteOptionList: any) {
   })
   return ratioList
 }
-export { getSupportersList, checkUserVote, getRetio }
+
+// 过滤失效投票列表
+function filterVoteList(voteOptionList: any) {
+  const filterList = voteOptionList.filter((item: any) => {
+    if (Date.now() < item.endingTime) {
+      return true
+    } else console.log(item)
+  })
+  return filterList
+}
+export { getSupportersList, checkUserVote, getRetio, filterVoteList }
