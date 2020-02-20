@@ -22,11 +22,11 @@ const VoteSchema = new Schema({
     required: true,
   },
   createTime: {
-    type: Date,
+    type: Number,
     required: true,
   },
   endingTime: {
-    type: Date,
+    type: Number,
     required: true,
   },
   desTextareaData: {
