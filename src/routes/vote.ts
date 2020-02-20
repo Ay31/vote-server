@@ -81,7 +81,10 @@ router.post('/submitVote', async ctx => {
       $inc: { 'voteOptionList.$.count': 1 },
     }
   )
-  ctx.body = { msg: '提交投票成功' }
+  const res = await Vote.findOne({
+    _id: voteId,
+  })
+  ctx.body = { msg: '提交投票成功', voteData: res }
 })
 
 // 获取投票占比接口
