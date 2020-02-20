@@ -16,6 +16,7 @@ mongoose
 app.use(
   KoaBody({
     json: true,
+    strict: false,
     urlencoded: true,
     multipart: true,
   })

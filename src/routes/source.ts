@@ -5,6 +5,14 @@ import path from 'path'
 
 const router = new Router()
 
+//测试接口
+router.get('/test',ctx => {
+    console.log('test connect');
+    ctx.body = {
+        msg:'test ok'
+    }
+})
+
 // 上传图片接口
 router.post('/uploadImage', (ctx: any) => {
   console.log('uploadImg suc')

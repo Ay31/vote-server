@@ -31,6 +31,26 @@ router.post('/createVote', async ctx => {
   }
 })
 
+// 删除投票接口
+router.delete('/deleteVote', async ctx => {
+  console.log('deleteVote connect')
+  const voteId = ctx.request.body.voteId
+  console.log(voteId)
+  try {
+    const res = await Vote.deleteOne({
+      _id: voteId,
+    })
+    if (res.deletedCount) {
+      ctx.body = {
+        res,
+        msg: 'delete suc',
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+})
+
 // 获取投票详情接口
 router.get('/getVoteDetail', async ctx => {
   console.log('获取投票详情接口')
