@@ -41,6 +41,10 @@ const VoteSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  isAnonymous: {
+    type: Boolean,
+    required: true,
+  },
   voteOptionList: [
     {
       content: String,
