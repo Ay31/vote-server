@@ -1,4 +1,5 @@
 import config from './config'
+import { Vote } from './schema/vote'
 const jwt = require('jsonwebtoken')
 
 // 校验token
@@ -65,4 +66,65 @@ function filterVoteList(voteOptionList: any) {
   })
   return filterList
 }
-export { getSupportersList, checkUserVote, getRetio, filterVoteList }
+
+// 汇总数据处理
+function getVoteAnalysis(voteData: any) {
+  const detailData = []
+  const data = voteData.voteOptionList
+  for (let i = 0; i < data.length; i++) {
+    const cityData = getItemAnalysis(data[i].supporters, 'city')
+    const languageData = getItemAnalysis(data[i].supporters, 'language')
+    const countryData = getItemAnalysis(data[i].supporters, 'country')
+    detailData.push({
+      cityData,
+      languageData,
+      countryData,
+    })
+  }
+  // const testData = voteData.voteOptionList[0].supporters
+  // const arr = getItemAnalysis(testData, 'city')
+  console.log(detailData)
+  return detailData
+}
+
+// 分析函数
+function getItemAnalysis(data: any, name: any) {
+  let arr = []
+  let count = 0
+  for (let i = 0; i < data.length; i++) {
+    if (i === 0) {
+      arr.push({
+        count: 1,
+        name: data[i][name],
+      })
+      count++
+    } else {
+      let flag = false
+      arr.forEach((item: any) => {
+        if (item.name === data[i][name]) {
+          item.count++
+          count++
+          flag = true
+        }
+      })
+      if (!flag) {
+        arr.push({
+          count: 1,
+          name: data[i][name],
+        })
+        count++
+      }
+    }
+  }
+  arr.forEach((item: any) => {
+    item.value = (item.count / count) * 100
+  })
+  return arr
+}
+export {
+  getSupportersList,
+  checkUserVote,
+  getRetio,
+  filterVoteList,
+  getVoteAnalysis,
+}

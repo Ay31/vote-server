@@ -1,14 +1,15 @@
 import Router from 'koa-router' // 导入koa-router
 import { Vote } from '../schema/vote'
 import { User } from '../schema/user'
-import { checkToken, checkUserVote, getRetio, filterVoteList } from '../util'
+import { checkToken, checkUserVote, getRetio, getVoteAnalysis } from '../util'
+import { connect } from 'mongoose'
 
 const router = new Router()
 
 router.use('', checkToken)
 
 // 测试接口
-router.get('/test', ctx => {
+router.get('/test', (ctx) => {
   console.log('vote test success')
   ctx.body = {
     suc: 'test',
@@ -16,7 +17,7 @@ router.get('/test', ctx => {
 })
 
 // 创建投票接口
-router.post('/createVote', async ctx => {
+router.post('/createVote', async (ctx) => {
   console.log('createVote接口')
   const newVote = new Vote(ctx.request.body)
 
@@ -32,7 +33,7 @@ router.post('/createVote', async ctx => {
 })
 
 // 删除投票接口
-router.delete('/deleteVote', async ctx => {
+router.delete('/deleteVote', async (ctx) => {
   console.log('deleteVote connect')
   const voteId = ctx.request.body.voteId
   console.log(voteId)
@@ -52,7 +53,7 @@ router.delete('/deleteVote', async ctx => {
 })
 
 // 获取投票详情接口
-router.get('/getVoteDetail', async ctx => {
+router.get('/getVoteDetail', async (ctx) => {
   console.log('获取投票详情接口')
   const { voteId, openId } = ctx.request.query
   const voteDetail: any = await Vote.findOne({ _id: voteId })
@@ -61,7 +62,7 @@ router.get('/getVoteDetail', async ctx => {
 })
 
 // 提交投票选项接口
-router.post('/submitVote', async ctx => {
+router.post('/submitVote', async (ctx) => {
   console.log('submitVote suc')
   const { optionId, openId, voteId, userInfo } = ctx.request.body
   await Vote.update(
@@ -88,7 +89,7 @@ router.post('/submitVote', async ctx => {
 })
 
 // 获取投票占比接口
-router.post('/getRetio', async ctx => {
+router.post('/getRetio', async (ctx) => {
   console.log('getRetio suc')
   const voteId = ctx.request.body.voteId
   const voteDetail: any = await Vote.findOne({ _id: voteId })
@@ -100,7 +101,7 @@ router.post('/getRetio', async ctx => {
 
 // 获取投票列表接口
 
-router.get('/getVoteList', async ctx => {
+router.get('/getVoteList', async (ctx) => {
   console.log('getVoteList suc')
   const openId = ctx.request.query.openId
   try {
@@ -123,14 +124,14 @@ router.get('/getVoteList', async ctx => {
 })
 
 // 获取热门投票列表接口
-router.get('/getHotVoteList', async ctx => {
+router.get('/getHotVoteList', async (ctx) => {
   console.log('getHotVoteList suc')
   const openId = ctx.request.query.openId
   try {
     const user: any = await User.findOne({ openId })
     const res: any = await Vote.find({
       isPrivate: false,
-      endingTime: { $gt: new Date().valueOf() },
+      // endingTime: { $gt: new Date().valueOf() },
     }).sort({
       votersCount: -1,
     })
@@ -144,6 +145,23 @@ router.get('/getHotVoteList', async ctx => {
     })
     ctx.body = {
       voteList,
+    }
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+// 获取数据汇总接口
+router.get('/getVoteAnalysis', async (ctx) => {
+  console.log('getVoteAnalysis connect')
+  const voteId = ctx.request.query.voteId
+  try {
+    const voteData = await Vote.findOne({
+      _id: voteId,
+    })
+    const detailData = getVoteAnalysis(voteData)
+    ctx.body = {
+      detailData,
     }
   } catch (error) {
     console.error(error)
