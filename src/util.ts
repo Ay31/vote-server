@@ -85,15 +85,18 @@ function getVoteAnalysis(voteData: any) {
       item.name = item.name.replace(/2\(/, '女性(')
       item.name = item.name.replace(/0\(/, '保密(')
     })
+    const avatarData: any = []
+    data[i].supporters.forEach((item: any) => {
+      avatarData.push(item.avatarUrl)
+    })
     detailData.push({
       cityData,
       provinceData,
       // countryData,
       genderData,
+      avatarData,
     })
   }
-  // const testData = voteData.voteOptionList[0].supporters
-  // const arr = getItemAnalysis(testData, 'city')
   return detailData
 }
 
