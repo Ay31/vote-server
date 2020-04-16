@@ -2,7 +2,6 @@ import Router from 'koa-router' // 导入koa-router
 import { Vote } from '../schema/vote'
 import { User } from '../schema/user'
 import { checkToken, checkUserVote, getRetio, getVoteAnalysis } from '../util'
-import { connect } from 'mongoose'
 
 const router = new Router()
 

@@ -1,5 +1,4 @@
 import config from './config'
-import { Vote } from './schema/vote'
 const jwt = require('jsonwebtoken')
 
 // 校验token
@@ -10,7 +9,12 @@ export const checkToken = async (ctx: any, next: any) => {
     jwt.verify(token, config.jwtSecret, (err: Error, decoded: any) => {
       if (err) {
         checkStatus = false
+        ctx.status = 401
+        ctx.body = {
+          message: '认证失败',
+        }
         console.log(err)
+        return
       }
       if (decoded.openId) {
         console.log('认证成功')
@@ -73,17 +77,23 @@ function getVoteAnalysis(voteData: any) {
   const data = voteData.voteOptionList
   for (let i = 0; i < data.length; i++) {
     const cityData = getItemAnalysis(data[i].supporters, 'city')
-    const languageData = getItemAnalysis(data[i].supporters, 'language')
-    const countryData = getItemAnalysis(data[i].supporters, 'country')
+    const provinceData = getItemAnalysis(data[i].supporters, 'province')
+    // const countryData = getItemAnalysis(data[i].supporters, 'country')
+    const genderData = getItemAnalysis(data[i].supporters, 'gender')
+    genderData.forEach((item: any) => {
+      item.name = item.name.replace(/1\(/, '男性(')
+      item.name = item.name.replace(/2\(/, '女性(')
+      item.name = item.name.replace(/0\(/, '保密(')
+    })
     detailData.push({
       cityData,
-      languageData,
-      countryData,
+      provinceData,
+      // countryData,
+      genderData,
     })
   }
   // const testData = voteData.voteOptionList[0].supporters
   // const arr = getItemAnalysis(testData, 'city')
-  console.log(detailData)
   return detailData
 }
 
@@ -117,7 +127,8 @@ function getItemAnalysis(data: any, name: any) {
     }
   }
   arr.forEach((item: any) => {
-    item.value = (item.count / count) * 100
+    item.value = Math.floor((item.count / count) * 100)
+    item.name = item.name + `(${item.value}%)`
   })
   return arr
 }
